@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import Balancer from "react-wrap-balancer"
-import { motion, Transition, Variants, useAnimation } from "framer-motion"
+import { motion, Variants, useAnimation } from "framer-motion"
 import { useEffect } from "react"
 
 type ProjectName = "321-NHL" | "Slamsgiving" | "Fidget"
@@ -50,26 +50,23 @@ export default function Projects() {
   )
 }
 
-const SPRING_TRANSITION: Transition = {
-  type: "spring",
-  stiffness: 80,
-  damping: 7,
-}
-
 const projectVariants: Variants = {
   initial: {
-    x: -4,
-    y: 4,
-  },
-  animate: {
     x: 0,
     y: 0,
-    transition: SPRING_TRANSITION,
+  },
+  animate: {
+    x: [0, 8, 0],
+    y: [0, -8, 0],
+    transition: {
+      ease: "easeInOut",
+      duration: 0.5,
+    },
   },
   hover: {
     x: 8,
     y: -8,
-    transition: SPRING_TRANSITION,
+    transition: { type: "spring", stiffness: 100, damping: 15 },
   },
 }
 
@@ -83,7 +80,6 @@ function ProjectItem({
 
   useEffect(() => {
     controls.start("animate", {
-      ...SPRING_TRANSITION,
       delay: index * 0.3,
     })
   }, [controls, index])
@@ -98,7 +94,7 @@ function ProjectItem({
             initial="initial"
             animate={controls}
             onHoverStart={() => controls.start("hover")}
-            onHoverEnd={() => controls.start("animate")}
+            onHoverEnd={() => controls.start("initial")}
           >
             <Image
               src={`/projects/${name.toLowerCase()}.png`}
