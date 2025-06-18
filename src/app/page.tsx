@@ -3,7 +3,7 @@ import Balancer from "react-wrap-balancer"
 
 export default function Home() {
   return (
-    <>
+    <div className="flex flex-col justify-center h-full w-full max-w-[700px] p-3 gap-8">
       <h1 className="text-4xl font-bold text-center">
         <Balancer ratio={0.3}>This is Duane's website.</Balancer>
       </h1>
@@ -34,6 +34,6 @@ export default function Home() {
         </Link>
         .
       </p>
-    </>
+    </div>
   )
 }
