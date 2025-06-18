@@ -30,7 +30,7 @@ const projects: Project[] = [
   {
     name: "Fidget",
     description:
-      "My first website, fidgetpodcast.com is the official website for the Fidget Podcast https://open.spotify.com/show/75DFMqluBGjBqxhTfLypKD.",
+      "My first website, fidgetpodcast.com is the official website for the Fidget Podcast.",
     link: "https://www.fidgetpodcast.com",
   },
 ]
@@ -52,8 +52,8 @@ export default function Projects() {
 
 const SPRING_TRANSITION: Transition = {
   type: "spring",
-  stiffness: 100,
-  damping: 15,
+  stiffness: 80,
+  damping: 7,
 }
 
 const projectVariants: Variants = {
