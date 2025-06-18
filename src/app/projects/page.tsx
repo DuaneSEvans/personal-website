@@ -1,6 +1,10 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import Balancer from "react-wrap-balancer"
+import { motion, Transition, Variants, useAnimation } from "framer-motion"
+import { useEffect } from "react"
 
 type ProjectName = "321-NHL" | "Slamsgiving" | "Fidget"
 
@@ -33,32 +37,77 @@ const projects: Project[] = [
 
 export default function Projects() {
   return (
-    <div className="flex flex-col justify-center h-full w-full max-w-[1080px] gap-8">
+    <div className="flex flex-col justify-center h-full w-full max-w-[1080px] gap-12">
       <h1 className="text-4xl font-bold text-center">
         <Balancer ratio={0.3}>Personal Projects.</Balancer>
       </h1>
       <div className="flex gap-16 flex-wrap justify-center">
-        {projects.map((project) => (
-          <ProjectItem {...project} key={project.name} />
+        {projects.map((project, index) => (
+          <ProjectItem {...project} key={project.name} index={index} />
         ))}
       </div>
     </div>
   )
 }
 
-function ProjectItem({ name, description, link }: Project) {
+const SPRING_TRANSITION: Transition = {
+  type: "spring",
+  stiffness: 100,
+  damping: 15,
+}
+
+const projectVariants: Variants = {
+  initial: {
+    x: -4,
+    y: 4,
+  },
+  animate: {
+    x: 0,
+    y: 0,
+    transition: SPRING_TRANSITION,
+  },
+  hover: {
+    x: 8,
+    y: -8,
+    transition: SPRING_TRANSITION,
+  },
+}
+
+function ProjectItem({
+  name,
+  description,
+  link,
+  index,
+}: Project & { index: number }) {
+  const controls = useAnimation()
+
+  useEffect(() => {
+    controls.start("animate", {
+      ...SPRING_TRANSITION,
+      delay: index * 0.3,
+    })
+  }, [controls, index])
+
   return (
     <article className="flex-1 flex flex-col gap-2 pb-2 min-w-[300px] max-w-[500px]">
       <h2 className="text-2xl font-bold text-center">{name}</h2>
       <Link href={link} target="_blank">
         <div className="relative bg-[var(--accent-complimentary)] pl-1 pb-1">
-          <Image
-            src={`/projects/${name.toLowerCase()}.png`}
-            alt={name}
-            width={1000}
-            height={1000}
-            className="shadow-xl hover:translate-x-2 hover:-translate-y-2 transition-all duration-300"
-          />
+          <motion.div
+            variants={projectVariants}
+            initial="initial"
+            animate={controls}
+            onHoverStart={() => controls.start("hover")}
+            onHoverEnd={() => controls.start("animate")}
+          >
+            <Image
+              src={`/projects/${name.toLowerCase()}.png`}
+              alt={name}
+              width={1000}
+              height={1000}
+              className="shadow-xl"
+            />
+          </motion.div>
         </div>
       </Link>
       <p className="text-sm text-justify">{description}</p>
