@@ -37,7 +37,7 @@ export default function Home() {
   const sparkleDelay = (delays[delays.length - 1] ?? 0) * 1000
 
   return (
-    <Sparkles delayMs={sparkleDelay} durationMs={6000}>
+    <Sparkles delayMs={visitedRecently ? 0 : sparkleDelay} durationMs={6000}>
       <div className="flex flex-col justify-center h-full w-full max-w-[700px] p-3 gap-8 items-center">
         <motion.h1
           className="text-4xl font-bold text-center"
