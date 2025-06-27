@@ -88,7 +88,8 @@ function ProjectItem({
     <article className="flex-1 flex flex-col gap-2 pb-2 min-w-[300px] max-w-[500px]">
       <h2 className="text-2xl font-bold text-center">{name}</h2>
       <Link href={link} target="_blank">
-        <div className="relative bg-[var(--accent-complimentary)] pl-1 pb-1">
+        <div className="relative">
+          <div className="absolute bg-[var(--accent-complimentary)] w-full h-full -z-1 translate-y-[6px] -translate-x-[6px]" />
           <motion.div
             variants={projectVariants}
             initial="initial"
