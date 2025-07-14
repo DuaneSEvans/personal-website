@@ -6,14 +6,14 @@ import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import Sparkles from "./components/Sparkles"
 
-const delays = [0.1, 1.6, 2.4, 3.2, 4, 5.5, 5.9, 6.3, 6.7]
+const delays = [0.1, 1, 1.8, 2.6, 3.4, 4.9, 5.3, 5.7, 6.1]
 
 function getDelay(index: number): number {
   return delays[index] ?? 0
 }
 
 const RECENT_VISIT_DURATION_MS =
-  process.env.NODE_ENV === "development" ? 1000 * 10 : 1000 * 60 * 5 // 5 minutes
+  process.env.NODE_ENV === "development" ? 1000 * 10 : 1000 * 60 * 60 * 24 // 1 day
 
 // TODO(dse): have even more fun with this and change text each time the user
 // visits again and again. e.g. "wow it's you again!"
@@ -104,15 +104,15 @@ export default function Home() {
             >
               bicycle trips
             </Link>{" "}
-            or some of the things{" "}
+            or some of my{" "}
             <Link
               href="/projects"
               className="text-[var(--accent)] hover:text-[var(--accent)]/80 hover:underline"
             >
-              I've built on the internet
+              hobby projects
             </Link>
+            .
           </motion.span>
-          .
         </p>
         <ul className="self-start">
           <motion.li

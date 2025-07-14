@@ -39,7 +39,7 @@ export default function Projects() {
   return (
     <div className="flex flex-col justify-center h-full w-full max-w-[1080px] gap-12">
       <h1 className="text-4xl font-bold text-center">
-        <Balancer ratio={0.3}>Personal Projects.</Balancer>
+        <Balancer ratio={0.3}>Hobby Projects.</Balancer>
       </h1>
       <div className="flex gap-16 flex-wrap justify-center">
         {projects.map((project, index) => (
