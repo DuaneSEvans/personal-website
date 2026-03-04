@@ -1,9 +1,9 @@
 "use client"
 
-import Link from "next/link"
-import Balancer from "react-wrap-balancer"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
+import AccentLink from "./components/AccentLink"
+import SiteTitleText from "./components/SiteTitleText"
 import Sparkles from "./components/Sparkles"
 
 const delays = [0.1, 1, 1.8, 2.6, 3.4, 4.9, 5.3, 5.7, 6.1]
@@ -12,8 +12,7 @@ function getDelay(index: number): number {
   return delays[index] ?? 0
 }
 
-const RECENT_VISIT_DURATION_MS =
-  process.env.NODE_ENV === "development" ? 1000 * 10 : 1000 * 60 * 60 * 24 // 1 day
+const RECENT_VISIT_DURATION_MS = 1000 * 60 * 60 * 24 // 1 day
 
 // TODO(dse): have even more fun with this and change text each time the user
 // visits again and again. e.g. "wow it's you again!"
@@ -38,9 +37,9 @@ export default function Home() {
 
   return (
     <Sparkles delayMs={visitedRecently ? 0 : sparkleDelay} durationMs={6000}>
-      <div className="flex flex-col justify-center h-full w-full max-w-[700px] p-3 gap-8 items-center">
+      <div className="flex h-full w-full max-w-[700px] flex-col items-center justify-center gap-8 p-3">
         <motion.h1
-          className="text-4xl font-bold text-center"
+          className="text-center text-4xl font-bold"
           initial={{ opacity: visitedRecently ? 1 : 0 }}
           animate={{ opacity: 1 }}
           transition={{
@@ -49,7 +48,7 @@ export default function Home() {
             ease: "easeIn",
           }}
         >
-          <Balancer ratio={0.3}>This is Duane's website.</Balancer>
+          <SiteTitleText />
         </motion.h1>
 
         <p className="text-justify">
@@ -88,7 +87,7 @@ export default function Home() {
                   ease: "easeIn",
                 }}
               >
-                You've made it.{" "}
+                You&apos;ve made it.{" "}
               </motion.span>
             </>
           )}
@@ -98,19 +97,13 @@ export default function Home() {
             transition={{ duration: 0.6, delay: getDelay(4), ease: "easeIn" }}
           >
             Check out the{" "}
-            <Link
-              href="/bicycle-trips"
-              className="text-[var(--accent)] hover:text-[var(--accent)]/80 hover:underline"
-            >
+            <AccentLink href="/bicycle-trips">
               bicycle trips
-            </Link>{" "}
+            </AccentLink>{" "}
             or some of my{" "}
-            <Link
-              href="/projects"
-              className="text-[var(--accent)] hover:text-[var(--accent)]/80 hover:underline"
-            >
+            <AccentLink href="/projects">
               hobby projects
-            </Link>
+            </AccentLink>
             .
           </motion.span>
         </p>
@@ -121,12 +114,9 @@ export default function Home() {
             transition={{ duration: 0.6, delay: getDelay(5), ease: "easeIn" }}
           >
             email:{" "}
-            <Link
-              href="mailto:duanesevans@gmail.com"
-              className="text-[var(--accent)] hover:text-[var(--accent)]/80 hover:underline"
-            >
+            <AccentLink href="mailto:duanesevans@gmail.com">
               duanesevans@gmail.com
-            </Link>
+            </AccentLink>
           </motion.li>
           <motion.li
             initial={{ opacity: visitedRecently ? 1 : 0 }}
@@ -134,13 +124,13 @@ export default function Home() {
             transition={{ duration: 0.6, delay: getDelay(6), ease: "easeIn" }}
           >
             gh:{" "}
-            <Link
+            <AccentLink
               href="https://github.com/duanesevans"
-              className="text-[var(--accent)] hover:text-[var(--accent)]/80 hover:underline"
+              rel="noreferrer"
               target="_blank"
             >
               DuaneSEvans
-            </Link>
+            </AccentLink>
           </motion.li>
           <motion.li
             initial={{ opacity: visitedRecently ? 1 : 0 }}
@@ -148,13 +138,13 @@ export default function Home() {
             transition={{ duration: 0.6, delay: getDelay(7), ease: "easeIn" }}
           >
             linkedin:{" "}
-            <Link
+            <AccentLink
               href="https://www.linkedin.com/in/duane-evans-73a5a510a/"
-              className="text-[var(--accent)] hover:text-[var(--accent)]/80 hover:underline"
+              rel="noreferrer"
               target="_blank"
             >
               duane-evans-73a5a510a
-            </Link>
+            </AccentLink>
           </motion.li>
         </ul>
       </div>

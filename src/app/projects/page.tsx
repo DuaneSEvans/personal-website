@@ -5,30 +5,42 @@ import Link from "next/link"
 import Balancer from "react-wrap-balancer"
 import { motion, Variants, useAnimation } from "framer-motion"
 import { useEffect } from "react"
+import AccentLink from "../components/AccentLink"
 
-type ProjectName = "321-NHL" | "Slamsgiving" | "Fidget"
+type ProjectName = "321-NHL" | "Slamsgiving" | "Fidget" | "Fantastic PWHL"
 
 type Project = {
   name: ProjectName
+  imgName: string
   description: string
   link: string
 }
 
 const projects: Project[] = [
   {
+    name: "Fantastic PWHL",
+    imgName: "fantastic-pwhl.png",
+    description:
+      "A free and fantastic fantasy hockey league for the Professional Women's Hockey League (PWHL). Friends can start leagues, draft and trade players, and compete for the top spot in their league.",
+    link: "https://fantasticpwhl.com",
+  },
+  {
     name: "321-NHL",
+    imgName: "321-nhl.png",
     description:
       "Hockey, the greatest sport on earth, is played in the National Hockey League (NHL). The NHL awards 2 points to the winning team. But what if the league followed a more traditional sport point system which awards 3 points to the winning team and splits them for non-regulation wins? This website displays the standings of the NHL if they used this alternate 3-2-1-0 point system.",
     link: "https://www.321nhl.com",
   },
   {
     name: "Slamsgiving",
+    imgName: "slamsgiving.png",
     description:
       "Slamsgiving is the most popular annual Shrek/Dennys/Slam party in western Canada. Confused? Don't be. Take a look at the joy of slamming that takes place each year.",
     link: "https://www.slamsgiving.com",
   },
   {
     name: "Fidget",
+    imgName: "fidget.png",
     description:
       "My first website, fidgetpodcast.com is the official website for the Fidget Podcast.",
     link: "https://www.fidgetpodcast.com",
@@ -72,6 +84,7 @@ const projectVariants: Variants = {
 
 function ProjectItem({
   name,
+  imgName,
   description,
   link,
   index,
@@ -87,7 +100,7 @@ function ProjectItem({
   return (
     <article className="flex-1 flex flex-col gap-2 pb-2 min-w-[300px] max-w-[500px]">
       <h2 className="text-2xl font-bold text-center">{name}</h2>
-      <Link href={link} target="_blank">
+      <Link href={link} rel="noreferrer" target="_blank">
         <div className="relative">
           <div className="absolute bg-[var(--accent-complimentary)] w-full h-full -z-1 translate-y-[6px] -translate-x-[6px]" />
           <motion.div
@@ -98,7 +111,7 @@ function ProjectItem({
             onHoverEnd={() => controls.start("initial")}
           >
             <Image
-              src={`/projects/${name.toLowerCase()}.png`}
+              src={`/projects/${imgName}`}
               alt={name}
               width={1000}
               height={1000}
@@ -108,14 +121,15 @@ function ProjectItem({
         </div>
       </Link>
       <p className="text-sm text-justify">{description}</p>
-      <Link
+      <AccentLink
         href={link}
         target="_blank"
-        className="text-[var(--accent)] hover:text-[var(--accent)]/80 hover:underline inline-flex items-center gap-1"
+        rel="noreferrer"
+        className="inline-flex items-center gap-1"
       >
         {link}
         <ExternalLinkIcon />
-      </Link>
+      </AccentLink>
     </article>
   )
 }

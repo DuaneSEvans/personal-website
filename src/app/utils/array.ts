@@ -14,9 +14,3 @@ export function choose<T>(arr: ReadonlyArray<T>): T {
   }
   return arr[Math.floor(Math.random() * arr.length)]!
 }
-
-// Given an array of items, and a function that gets some property from each item,
-// return an array that holds only unique elements. Note that this preserves order.
-export function uniqueBy<T, K>(array: T[], getKey: (item: T) => K): T[] {
-  return [...new Map(array.map((a) => [getKey(a), a])).values()]
-}

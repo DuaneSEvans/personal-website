@@ -18,7 +18,9 @@ export default function Sparkles({
 }) {
   const { current: startSparklesTime } = useRef(Date.now() + delayMs)
 
-  const [sparkles, setSparkles] = useState(Array(3).map(generateSparkle))
+  const [sparkles, setSparkles] = useState<SparkleType[]>(() =>
+    Array.from({ length: 3 }, () => generateSparkle()),
+  )
   useRandomInterval(
     () => {
       const showSparkles =
@@ -26,14 +28,16 @@ export default function Sparkles({
         startSparklesTime + durationMs > Date.now()
       if (!showSparkles) return
 
-      const sparkle = generateSparkle()
-      const now = Date.now()
-      const nextSparkles = sparkles.filter((sp) => {
-        const delta = now - sp.createdAt
-        return delta < 750
+      setSparkles((currentSparkles) => {
+        const sparkle = generateSparkle()
+        const now = Date.now()
+        const nextSparkles = currentSparkles.filter((sp) => {
+          const delta = now - sp.createdAt
+          return delta < 750
+        })
+        nextSparkles.push(sparkle)
+        return nextSparkles
       })
-      nextSparkles.push(sparkle)
-      setSparkles(nextSparkles)
     },
     50,
     450
