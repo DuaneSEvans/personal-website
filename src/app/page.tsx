@@ -6,7 +6,7 @@ import AccentLink from "./components/AccentLink"
 import SiteTitleText from "./components/SiteTitleText"
 import Sparkles from "./components/Sparkles"
 
-const delays = [0.1, 1, 1.8, 2.6, 3.4, 4.9, 5.3, 5.7, 6.1]
+const delays = [0.2, 1, 1.8, 2.6, 3.4, 4.2, 4.6, 5.0, 5.4]
 
 function getDelay(index: number): number {
   return delays[index] ?? 0
@@ -97,14 +97,8 @@ export default function Home() {
             transition={{ duration: 0.6, delay: getDelay(4), ease: "easeIn" }}
           >
             Check out the{" "}
-            <AccentLink href="/bicycle-trips">
-              bicycle trips
-            </AccentLink>{" "}
-            or some of my{" "}
-            <AccentLink href="/projects">
-              hobby projects
-            </AccentLink>
-            .
+            <AccentLink href="/bicycle-trips">bicycle trips</AccentLink> or some
+            of my <AccentLink href="/projects">hobby projects</AccentLink>.
           </motion.span>
         </p>
         <ul className="self-start">

@@ -18,9 +18,7 @@ export default function Sparkles({
 }) {
   const { current: startSparklesTime } = useRef(Date.now() + delayMs)
 
-  const [sparkles, setSparkles] = useState<SparkleType[]>(() =>
-    Array.from({ length: 3 }, () => generateSparkle()),
-  )
+  const [sparkles, setSparkles] = useState<SparkleType[]>([])
   useRandomInterval(
     () => {
       const showSparkles =
@@ -40,7 +38,7 @@ export default function Sparkles({
       })
     },
     50,
-    450
+    450,
   )
   return (
     <span className="relative inline-block">
