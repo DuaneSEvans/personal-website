@@ -58,16 +58,42 @@ function TripPhoto({
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [activePhotoIndex, setActivePhotoIndex] = useState(photoIndex)
+  const [isZoomed, setIsZoomed] = useState(false)
+  const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 })
   const activePhoto = gallery[activePhotoIndex] ?? photo
 
   function showPreviousPhoto() {
+    setIsZoomed(false)
     setActivePhotoIndex((currentIndex) =>
       (currentIndex - 1 + gallery.length) % gallery.length,
     )
   }
 
   function showNextPhoto() {
+    setIsZoomed(false)
     setActivePhotoIndex((currentIndex) => (currentIndex + 1) % gallery.length)
+  }
+
+  function updateZoomOrigin({
+    clientX,
+    clientY,
+    photoButton,
+  }: {
+    clientX: number
+    clientY: number
+    photoButton: HTMLButtonElement
+  }) {
+    const photoBounds = photoButton.getBoundingClientRect()
+    setZoomOrigin({
+      x: Math.min(
+        100,
+        Math.max(0, ((clientX - photoBounds.left) / photoBounds.width) * 100),
+      ),
+      y: Math.min(
+        100,
+        Math.max(0, ((clientY - photoBounds.top) / photoBounds.height) * 100),
+      ),
+    })
   }
 
   return (
@@ -75,7 +101,10 @@ function TripPhoto({
       open={isOpen}
       onOpenChange={(open) => {
         setIsOpen(open)
-        if (open) setActivePhotoIndex(photoIndex)
+        if (open) {
+          setActivePhotoIndex(photoIndex)
+          setIsZoomed(false)
+        }
       }}
     >
       <Dialog.Trigger asChild>
@@ -109,7 +138,7 @@ function TripPhoto({
               showNextPhoto()
             }
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 text-white sm:p-8"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden p-4 text-white sm:p-8"
         >
           <Dialog.Title className="sr-only">{activePhoto.alt}</Dialog.Title>
           <span aria-live="polite" className="sr-only">
@@ -126,7 +155,7 @@ function TripPhoto({
               <button
                 type="button"
                 aria-label="Previous photo"
-                className="absolute left-4 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-2xl hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:flex"
+                className="absolute left-4 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/15 text-2xl hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:flex"
                 onClick={(event) => {
                   event.stopPropagation()
                   showPreviousPhoto()
@@ -137,7 +166,7 @@ function TripPhoto({
               <button
                 type="button"
                 aria-label="Next photo"
-                className="absolute right-4 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-2xl hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:flex"
+                className="absolute right-4 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/15 text-2xl hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:flex"
                 onClick={(event) => {
                   event.stopPropagation()
                   showNextPhoto()
@@ -147,14 +176,49 @@ function TripPhoto({
               </button>
             </>
           )}
-          <Image
-            src={activePhoto.src}
-            alt={activePhoto.alt}
-            width={activePhoto.width}
-            height={activePhoto.height}
-            sizes="100vw"
-            className="m-auto h-auto max-h-[calc(100dvh-6rem)] w-auto max-w-full object-contain"
-          />
+          <button
+            type="button"
+            aria-label={`${isZoomed ? "Zoom out of" : "Zoom in on"} ${activePhoto.alt}`}
+            className={`m-auto flex max-h-full max-w-full items-center justify-center border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"}`}
+            onClick={(event) => {
+              event.stopPropagation()
+              if (isZoomed) {
+                setIsZoomed(false)
+                return
+              }
+              if (event.detail !== 0) {
+                updateZoomOrigin({
+                  clientX: event.clientX,
+                  clientY: event.clientY,
+                  photoButton: event.currentTarget,
+                })
+              } else {
+                setZoomOrigin({ x: 50, y: 50 })
+              }
+              setIsZoomed(true)
+            }}
+            onMouseMove={(event) => {
+              if (!isZoomed) return
+              updateZoomOrigin({
+                clientX: event.clientX,
+                clientY: event.clientY,
+                photoButton: event.currentTarget,
+              })
+            }}
+          >
+            <Image
+              src={activePhoto.src}
+              alt={activePhoto.alt}
+              width={activePhoto.width}
+              height={activePhoto.height}
+              sizes={isZoomed ? "200vw" : "100vw"}
+              style={{
+                transform: isZoomed ? "scale(2)" : undefined,
+                transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
+              }}
+              className="h-auto max-h-[calc(100dvh-6rem)] w-auto max-w-full object-contain motion-safe:transition-transform motion-safe:duration-200"
+            />
+          </button>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
