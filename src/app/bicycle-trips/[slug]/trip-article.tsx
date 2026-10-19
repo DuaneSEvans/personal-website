@@ -29,12 +29,16 @@ export default function TripArticle({ trip }: TripArticleProps) {
       </section>
       <section className="flex flex-col gap-4">
         <ul className="list-none columns-1 [column-gap:1rem] sm:columns-2 lg:columns-3">
-          {trip.gallery.map((photo) => (
+          {trip.gallery.map((photo, photoIndex) => (
             <li
               key={photo.src}
               className="inline-block w-full break-inside-avoid"
             >
-              <TripPhoto photo={photo} />
+              <TripPhoto
+                photo={photo}
+                photoIndex={photoIndex}
+                gallery={trip.gallery}
+              />
             </li>
           ))}
         </ul>
@@ -43,11 +47,37 @@ export default function TripArticle({ trip }: TripArticleProps) {
   )
 }
 
-function TripPhoto({ photo }: { photo: TripImage }) {
+function TripPhoto({
+  photo,
+  photoIndex,
+  gallery,
+}: {
+  photo: TripImage
+  photoIndex: number
+  gallery: Array<TripImage>
+}) {
   const [isOpen, setIsOpen] = useState(false)
+  const [activePhotoIndex, setActivePhotoIndex] = useState(photoIndex)
+  const activePhoto = gallery[activePhotoIndex] ?? photo
+
+  function showPreviousPhoto() {
+    setActivePhotoIndex((currentIndex) =>
+      (currentIndex - 1 + gallery.length) % gallery.length,
+    )
+  }
+
+  function showNextPhoto() {
+    setActivePhotoIndex((currentIndex) => (currentIndex + 1) % gallery.length)
+  }
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog.Root
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open)
+        if (open) setActivePhotoIndex(photoIndex)
+      }}
+    >
       <Dialog.Trigger asChild>
         <button
           type="button"
@@ -69,20 +99,59 @@ function TripPhoto({ photo }: { photo: TripImage }) {
         <Dialog.Content
           aria-describedby={undefined}
           onClick={() => setIsOpen(false)}
+          onKeyDown={(event) => {
+            if (gallery.length < 2) return
+            if (event.key === "ArrowLeft") {
+              event.preventDefault()
+              showPreviousPhoto()
+            } else if (event.key === "ArrowRight") {
+              event.preventDefault()
+              showNextPhoto()
+            }
+          }}
           className="fixed inset-0 z-50 flex items-center justify-center p-4 text-white sm:p-8"
         >
-          <Dialog.Title className="sr-only">{photo.alt}</Dialog.Title>
+          <Dialog.Title className="sr-only">{activePhoto.alt}</Dialog.Title>
+          <span aria-live="polite" className="sr-only">
+            Photo {activePhotoIndex + 1} of {gallery.length}
+          </span>
           <Dialog.Close
             aria-label="Close photo"
             className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-3xl leading-none hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:right-8 sm:top-8"
           >
             ×
           </Dialog.Close>
+          {gallery.length > 1 && (
+            <>
+              <button
+                type="button"
+                aria-label="Previous photo"
+                className="absolute left-4 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-2xl hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:flex"
+                onClick={(event) => {
+                  event.stopPropagation()
+                  showPreviousPhoto()
+                }}
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                aria-label="Next photo"
+                className="absolute right-4 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-2xl hover:bg-white/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:flex"
+                onClick={(event) => {
+                  event.stopPropagation()
+                  showNextPhoto()
+                }}
+              >
+                →
+              </button>
+            </>
+          )}
           <Image
-            src={photo.src}
-            alt={photo.alt}
-            width={photo.width}
-            height={photo.height}
+            src={activePhoto.src}
+            alt={activePhoto.alt}
+            width={activePhoto.width}
+            height={activePhoto.height}
             sizes="100vw"
             className="m-auto h-auto max-h-[calc(100dvh-6rem)] w-auto max-w-full object-contain"
           />
